@@ -1,11 +1,10 @@
 pipeline {
     agent any
     environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-credentials') // Use your Jenkins AWS credentials ID
-        AWS_SECRET_ACCESS_KEY = credentials('aws-credentials')
+        AWS_CREDENTIALS_ID = ('aws-creds') // Use your Jenkins AWS credentials ID
     }
     stages {
-        stage('Clone Repository') {
+    stage('Clone Repository') {
             steps {
                 checkout scm
             }
@@ -23,7 +22,9 @@ pipeline {
     }
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                withAWS(credentials: "${AWS_CREDENTIALS_ID}") {
+                    sh 'terraform init'
+                }
             }
         }
         stage('Terraform Plan') {
