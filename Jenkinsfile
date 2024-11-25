@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        AWS_CREDENTIALS_ID = 'aws_creds' // Replace with the ID of your AWS credentials in Jenkins
+    }
     stages {
         stage('Clone Repository') {
             steps {
@@ -18,19 +21,23 @@ pipeline {
         }
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                withAWS(credentials: AWS_CREDENTIALS_ID, region: 'us-east-1') {
+                    sh 'terraform init'
+                }
             }
         }
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan'
+                withAWS(credentials: AWS_CREDENTIALS_ID, region: 'us-east-1') {
+                    sh 'terraform plan'
+                }
             }
         }
         stage('Terraform Apply') {
             steps {
-                sh '''
-                terraform apply -auto-approve
-                '''
+                withAWS(credentials: AWS_CREDENTIALS_ID, region: 'us-east-1') {
+                    sh 'terraform apply -auto-approve'
+                }
             }
         }
     }
