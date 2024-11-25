@@ -1,7 +1,8 @@
 pipeline {
     agent any
     environment {
-        AWS_CREDENTIALS_ID = 'aws-creds' // Replace 'aws-creds' with your Jenkins AWS credentials ID
+        AWS_CREDENTIALS_ID = 'aws-creds' // Replace with your Jenkins AWS credentials ID
+        AWS_REGION = 'us-east-1'        // Replace with your desired AWS region
     }
     stages {
         stage('Clone Repository') {
@@ -21,12 +22,12 @@ pipeline {
         }
         stage('Terraform Init') {
             steps {
-                withAWS(credentials: "${AWS_CREDENTIALS_ID}") {
+                withAWS(credentials: "${AWS_CREDENTIALS_ID}", region: "${AWS_REGION}") {
                     sh '''
                     terraform init \
                     -backend-config="bucket=<your-s3-bucket-name>" \
                     -backend-config="key=terraform/statefile" \
-                    -backend-config="region=<your-region>"
+                    -backend-config="region=${AWS_REGION}"
                     '''
                 }
             }
