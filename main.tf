@@ -10,6 +10,6 @@ terraform {
   }
 }
 resource "aws_s3_bucket" "example" {
-bucket = "my-example-bucket-mcg-2"
+bucket = "my-example-bucket-mcg-3"
 acl    = "private"
 }
