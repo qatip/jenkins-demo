@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-        AWS_CREDENTIALS_ID = 'aws_creds' // Replace with the ID of your AWS credentials in Jenkins
-    }
     stages {
         stage('Clone Repository') {
             steps {
@@ -21,22 +18,34 @@ pipeline {
         }
         stage('Terraform Init') {
             steps {
-                withAWS(credentials: AWS_CREDENTIALS_ID, region: 'us-west-1') {
-                    sh 'terraform init'
+                withCredentials([usernamePassword(credentialsId: 'aws_user', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                    export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                    terraform init
+                    '''
                 }
             }
         }
         stage('Terraform Plan') {
             steps {
-                withAWS(credentials: AWS_CREDENTIALS_ID, region: 'us-west-1') {
-                    sh 'terraform plan'
+                withCredentials([usernamePassword(credentialsId: 'aws_user', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                    export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                    terraform plan
+                    '''
                 }
             }
         }
         stage('Terraform Apply') {
             steps {
-                withAWS(credentials: AWS_CREDENTIALS_ID, region: 'us-west-1') {
-                    sh 'terraform apply -auto-approve'
+                withCredentials([usernamePassword(credentialsId: 'aws_user', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                    export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                    terraform apply -auto-approve
+                    '''
                 }
             }
         }
