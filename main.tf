@@ -1,7 +1,14 @@
 provider "aws" {
   region = "us-west-2"
 }
-
+terraform {
+  backend "s3" {
+    bucket         = "statefile-bucket-michael"        # Replace with your bucket name
+    key            = "terraform.tfstate"  # Path inside the bucket
+    region         = "us-west-2"                  # Replace with your AWS region
+    encrypt        = true                         # Enable server-side encryption
+  }
+}
 resource "aws_s3_bucket" "example" {
 bucket = "my-example-bucket-mcg-1"
 acl    = "private"
