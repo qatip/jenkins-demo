@@ -3,7 +3,7 @@ provider "aws" {
 }
 terraform {
   backend "s3" {
-    bucket         = "statefile-bucket-michael"        # Replace with your bucket name
+    bucket         = "jenkins-state-michael"        # Replace with your bucket name
     key            = "terraform.tfstate"  # Path inside the bucket
     region         = "us-west-2"                  # Replace with your AWS region
     encrypt        = true                         # Enable server-side encryption
